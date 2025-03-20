@@ -1,6 +1,7 @@
 import { SignInForm } from "@/components/auth/sign-in-form"
 import { getSession } from "@/lib/auth"
 import { redirect } from "next/navigation"
+import { prisma } from "@/lib/prisma"
 
 export default async function SignInPage() {
   const session = await getSession()
@@ -10,15 +11,11 @@ export default async function SignInPage() {
       where: { id: session.user.id },
     })
 
-    // Redirect to email verification prompt if the user is not verified
     if (!user?.emailVerified) {
       redirect("/auth/verify-email-prompt")
-      return null
     }
 
-    // Redirect to dashboard if the user is verified
     redirect("/dashboard")
-    return null
   }
 
   return (

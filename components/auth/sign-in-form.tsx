@@ -13,6 +13,9 @@ export function SignInForm() {
   const [password, setPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [isResending, setIsResending] = useState(false)
+  const [resendMessage, setResendMessage] = useState<string | null>(null)
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -40,11 +43,54 @@ export function SignInForm() {
     }
   }
 
+  const handleResend = async () => {
+    setIsResending(true)
+    setResendMessage(null)
+  
+    try {
+      const response = await fetch("/api/auth/resend-verification", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      })
+  
+      // Try to parse JSON response, if it fails, use the text response
+      let data
+      const contentType = response.headers.get("content-type")
+      if (contentType && contentType.includes("application/json")) {
+        data = await response.json()
+      } else {
+        const text = await response.text()
+        throw new Error(text)
+      }
+  
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to resend verification email")
+      }
+  
+      setResendMessage("Verification email sent successfully. Please check your inbox.")
+    } catch (error) {
+      setResendMessage(error instanceof Error ? error.message : "Something went wrong")
+    } finally {
+      setIsResending(false)
+    }
+  }
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      {error && (
-        <div>
+{error && (
+        <div className="p-3 text-red-500 bg-red-50 rounded">
           <div>{error}</div>
+          {error === "Email verification pending. Please verify your email." && (
+            <button
+              onClick={handleResend}
+              disabled={isResending}
+              className="mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:bg-blue-400"
+            >
+              {isResending ? "Resending..." : "Resend Verification Email"}
+            </button>
+          )}
+          {resendMessage && <p className="mt-2 text-sm text-gray-600">{resendMessage}</p>}
         </div>
       )}
       <div className="space-y-2">

@@ -1,13 +1,17 @@
 import { SignUpForm } from "@/components/auth/sign-up-form"
 import { getSession } from "@/lib/auth"
 import { redirect } from "next/navigation"
+import { prisma } from "@/lib/prisma"
 
 export default async function SignUpPage() {
   const session = await getSession()
 
   if (session) {
-    const user = await fetch(`/api/auth/user/${session.user.id}`).then((res) => res.json())
-    if (!user.emailVerified) {
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+    })
+
+    if (!user?.emailVerified) {
       redirect("/auth/verify-email-prompt")
     } else {
       redirect("/dashboard")

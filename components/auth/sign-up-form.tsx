@@ -75,7 +75,7 @@ export function SignUpForm() {
         throw new Error(data.message || "Failed to register")
       }
 
-      router.push("/auth/signin?registered=true")
+      router.push("/auth/verify-email-prompt")
     } catch (error) {
       setError(error instanceof Error ? error.message : "Something went wrong")
       setIsLoading(false)

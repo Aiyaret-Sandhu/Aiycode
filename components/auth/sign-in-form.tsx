@@ -27,7 +27,7 @@ export function SignInForm() {
       })
 
       if (result?.error) {
-        setError("Invalid email or password")
+        setError(result.error)
         setIsLoading(false)
         return
       }

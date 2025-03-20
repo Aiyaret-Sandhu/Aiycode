@@ -6,7 +6,19 @@ export default async function SignInPage() {
   const session = await getSession()
 
   if (session) {
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+    })
+
+    // Redirect to email verification prompt if the user is not verified
+    if (!user?.emailVerified) {
+      redirect("/auth/verify-email-prompt")
+      return null
+    }
+
+    // Redirect to dashboard if the user is verified
     redirect("/dashboard")
+    return null
   }
 
   return (

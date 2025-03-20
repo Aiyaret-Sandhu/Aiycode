@@ -6,7 +6,12 @@ export default async function SignUpPage() {
   const session = await getSession()
 
   if (session) {
-    redirect("/dashboard")
+    const user = await fetch(`/api/auth/user/${session.user.id}`).then((res) => res.json())
+    if (!user.emailVerified) {
+      redirect("/auth/verify-email-prompt")
+    } else {
+      redirect("/dashboard")
+    }
   }
 
   return (

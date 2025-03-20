@@ -5,9 +5,12 @@ CREATE TABLE "User" (
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "emailVerified" TIMESTAMP(3),
+    "verificationToken" TEXT,
     "image" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "resetToken" TEXT,
+    "resetTokenExpiry" TIMESTAMP(3),
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -49,6 +52,9 @@ CREATE TABLE "VerificationToken" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_resetToken_key" ON "User"("resetToken");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Account_provider_providerAccountId_key" ON "Account"("provider", "providerAccountId");

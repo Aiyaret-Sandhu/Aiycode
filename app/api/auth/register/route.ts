@@ -1,44 +1,56 @@
 import { NextResponse } from "next/server"
 import { hash } from "bcrypt"
 import { prisma } from "@/lib/prisma"
+import { randomBytes } from "crypto"
+import nodemailer from "nodemailer"
 
 export async function POST(req: Request) {
   try {
     const { name, email, password } = await req.json()
 
-    // Validate input
     if (!name || !email || !password) {
       return NextResponse.json({ message: "Missing required fields" }, { status: 400 })
     }
 
-    // Check if user already exists
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
-    })
-
+    const existingUser = await prisma.user.findUnique({ where: { email } })
     if (existingUser) {
       return NextResponse.json({ message: "User with this email already exists" }, { status: 409 })
     }
 
-    // Hash password
     const hashedPassword = await hash(password, 10)
+    const verificationToken = randomBytes(32).toString("hex")
 
-    // Create user
-    const user = await prisma.user.create({
+    await prisma.user.create({
       data: {
         name,
         email,
         password: hashedPassword,
+        verificationToken,
       },
     })
 
-    // Remove password from response
-    const { password: _, ...userWithoutPassword } = user
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: parseInt(process.env.SMTP_PORT || "587"),
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASSWORD,
+      },
+    })
 
-    return NextResponse.json({ message: "User created successfully", user: userWithoutPassword }, { status: 201 })
+    const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/auth/verify-email?token=${verificationToken}`
+
+    await transporter.sendMail({
+      from: process.env.SMTP_FROM,
+      to: email,
+      subject: "Verify Your Email",
+      html: `<p>Click the link below to verify your email:</p>
+             <a href="${verificationUrl}">${verificationUrl}</a>`,
+    })
+
+    return NextResponse.json({ message: "User registered. Please verify your email." }, { status: 201 })
   } catch (error) {
     console.error("Registration error:", error)
     return NextResponse.json({ message: "Something went wrong" }, { status: 500 })
   }
 }
-

@@ -1,2 +1,9 @@
 @import "tailwindcss";
 
+:root {
+    --monaco-font: 'Space Mono', monospace;
+}
+
+.monaco-editor {
+    font-family: var(--monaco-font) !important;
+}

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Noto_Sans } from "next/font/google";
+import { Noto_Sans, Space_Mono } from "next/font/google";
 import { Navbar } from "@/components/layout/navbar"
 import { AuthProvider } from "@/components/auth/auth-provider"
 import "./globals.css";
@@ -10,6 +10,11 @@ const notoSans = Noto_Sans({
   weight: ["300", "400", "500", "700"], 
 });
 
+const spaceMono = Space_Mono({
+  variable: '--font-space-mono',
+  subsets: ['latin'],
+  weight: ['400', '700'],
+})
 
 export const metadata: Metadata = {
   title: "Create Next App",

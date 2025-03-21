@@ -54,7 +54,7 @@ export function SignInForm() {
         body: JSON.stringify({ email }),
       })
   
-      // Try to parse JSON response, if it fails, use the text response
+    
       let data
       const contentType = response.headers.get("content-type")
       if (contentType && contentType.includes("application/json")) {

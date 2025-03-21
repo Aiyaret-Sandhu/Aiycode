@@ -5,7 +5,7 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 
-// Password validation function with separate checks
+
 const getPasswordStrength = (password: string) => {
   return {
     minLength: password.length >= 8,
@@ -31,7 +31,7 @@ export function SignUpForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [passwordStrength, setPasswordStrength] = useState(getPasswordStrength(""))
 
-  // Update password strength in real-time
+  
   useEffect(() => {
     setPasswordStrength(getPasswordStrength(password))
   }, [password])
@@ -42,7 +42,7 @@ export function SignUpForm() {
     setIsLoading(true)
     setError(null)
 
-    // Password validation
+
     if (password !== confirmPassword) {
       setError("Passwords do not match")
       setIsLoading(false)
@@ -76,7 +76,9 @@ export function SignUpForm() {
       }
 
       router.push("/auth/verify-email-prompt")
+
     } catch (error) {
+      
       setError(error instanceof Error ? error.message : "Something went wrong")
       setIsLoading(false)
     }

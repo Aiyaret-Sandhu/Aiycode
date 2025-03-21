@@ -1,6 +1,7 @@
 import { getSession } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
+import Link from "next/link"
 
 export default async function DashboardPage() {
   const session = await getSession()
@@ -9,8 +10,6 @@ export default async function DashboardPage() {
     redirect("/auth/signin")
     return null
   }
-
-  
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
@@ -32,6 +31,13 @@ export default async function DashboardPage() {
         <p className="mb-2">Welcome, {user.name}!</p>
         <p>This is a protected page that only authenticated and verified users can access.</p>
       </div>
+
+      <Link 
+        href="/dashboard/code-runner"
+        className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+      >
+        Open Code Runner
+      </Link>
     </div>
   )
 }

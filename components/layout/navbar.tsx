@@ -6,7 +6,7 @@ export function Navbar() {
     <header className="border-b">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="font-bold text-xl">
-          My App
+          Aiycode
         </Link>
         <nav className="flex items-center gap-6">
           <Link href="/" className="text-sm font-medium">

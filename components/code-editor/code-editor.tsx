@@ -18,6 +18,7 @@ export function CodeEditor() {
   const [code, setCode] = useState('')
   const [language, setLanguage] = useState('javascript')
   const [output, setOutput] = useState('')
+  const [stdin, setStdin] = useState('')
   const [isRunning, setIsRunning] = useState(false)
 
   const debouncedSetCode = useCallback(
@@ -47,7 +48,7 @@ export function CodeEditor() {
             body: JSON.stringify({
                 source_code: code,
                 language_id: LANGUAGE_IDS[language as keyof typeof LANGUAGE_IDS],
-                stdin: ''
+                stdin: stdin
             })
         })
 
@@ -110,11 +111,23 @@ export function CodeEditor() {
         />
       </div>
 
-      <div className="flex-1">
+      <div className="flex-1 flex flex-col gap-4">
+        <div>
+          <h2 className="text-lg font-semibold mb-2">Input</h2>
+          <textarea
+            className="w-full h-32 p-2 border rounded font-mono"
+            placeholder="Enter input here..."
+            value={stdin}
+            onChange={(e) => setStdin(e.target.value)}
+          />
+        </div>
 
-        <h2 className="text-lg font-semibold mb-2">Output</h2>
-        <pre className="whitespace-pre-wrap">{output}</pre>
-
+        <div>
+          <h2 className="text-lg font-semibold mb-2">Output</h2>
+          <pre className="whitespace-pre-wrap p-2 border rounded bg-gray-50 min-h-[8rem]">
+            {output}
+          </pre>
+        </div>
       </div>
     </div>
   )

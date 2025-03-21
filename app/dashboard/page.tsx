@@ -38,6 +38,13 @@ export default async function DashboardPage() {
       >
         Open Code Runner
       </Link>
+
+      <Link 
+        href="/dashboard/readme-previewer"
+        className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+      >
+        Open Readme Previewer
+      </Link>
     </div>
   )
 }
